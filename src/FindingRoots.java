@@ -1,5 +1,10 @@
+/**
+ * Author: Colin Koo
+ * Professor: Raheja
+ * Program: Implement methods to find a root of an equation including
+ * Bisection, Secant, Newton-Raphson, False-Position, and Modified Secant.
+ */
 import java.util.ArrayList;
-
 
 public class FindingRoots {
 
