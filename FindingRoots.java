@@ -14,8 +14,10 @@ public class FindingRoots {
 		equation.add(-11.7);
 		equation.add(17.7);
 		equation.add(-5.0);
-		//		bisection(0, 0.5, equation, 0.365098);
+		//bisection(0, 0.5, equation, 0.365098);
 		//secant(0, 0.5, equation, 0.365098);
+		//newton(0.5, equation, 0.365098);
+		modSecant(1, equation, 0.365098);
 	}
 	// no special checks, assumes root exists between brackets
 	public static void bisection(double a, double b, ArrayList<Double> equation, double trueRoot){
@@ -62,18 +64,19 @@ public class FindingRoots {
 				prevStart = start;
 			}
 			else{
-				errorA = Math.abs((start - prevStart))/start;
+				errorA = Math.abs(start - prevStart)/start;
+				prevStart = start;
 			}
 			errorT = Math.abs(trueRoot - start)/trueRoot;
 			ArrayList<Double> derivative = derivative(equation);
 			fderiv = calcEquation(start, derivative);
 			next = start - ((fstart)/(fderiv));	//no need?
-			start = next;
 			
 			System.out.println("n: " + iterations
 					+ "\nstart: " + start + ",\tnext: " + next
 					+"\nfstart:\t" + fstart + ", fderiv:\t" + fderiv
 					+ "\nErrorA:\t" + errorA + ", ErrorT:\t" + errorT + "\n");
+			start = next;
 			
 			++iterations;
 		}
@@ -133,6 +136,34 @@ public class FindingRoots {
 		}
 	}
 
+	public static void modSecant(double a, ArrayList<Double> equation, double trueRoot){
+		int iterations = 0;
+		final double delta = 0.01;
+		double start = a, prevStart = Double.NaN, next, fstart, fstartdelta, errorA = Double.POSITIVE_INFINITY, errorT = Double.POSITIVE_INFINITY;
+		while (iterations < 100 && Math.abs(errorA) > 0.01){
+			fstart = calcEquation(start, equation);
+			fstartdelta = calcEquation(start + start*delta, equation);
+			next = start - ((fstart*delta*start)/(fstartdelta-fstart));
+			errorT = Math.abs(trueRoot - start)/trueRoot;
+			if (iterations == 0){
+				prevStart = start;
+			}
+			else{
+				errorA = Math.abs(start - prevStart)/start;
+				prevStart = start;
+			}
+			System.out.println("n: " + iterations
+					+ "\nstart: " + start + ",\tnext: " + next
+					+"\nfstart:\t" + fstart + ", fstartdelta:\t" + fstartdelta
+					+ "\nErrorA:\t" + errorA + ", ErrorT:\t" + errorT + "\n");
+			
+			start = next;
+			++iterations;
+		}
+	}
+	
+		
+	
 	public static double calcEquation(double variable, ArrayList<Double> equation){
 		double sum = 0;
 		if (equation.size() != 0){
