@@ -7,7 +7,7 @@
 import java.util.ArrayList;
 
 public class FindingRoots {
-
+	
 	public static void main(String[] args) {
 		ArrayList<Double> equation = new ArrayList<Double>(); //roots: x = 0.365098, x = 1.92174, x = 3.56316
 		equation.add(2.0);	//2x3 – 11.7x2 + 17.7x – 5
@@ -20,7 +20,7 @@ public class FindingRoots {
 		bisection(3, 4, equation, 3.56316, false);
 		bisection(120, 130, equation, 126.632, true);
 		
-		newton(1, equation, 0.365098, false);
+		newton(0.5, equation, 0.365098, false);
 		newton(2, equation, 1.92174, false);
 		newton(4, equation, 3.56316, false);
 		newton(130, equation, 126.632, true);
@@ -41,7 +41,15 @@ public class FindingRoots {
 		falsePosition(120, 130, equation, 126.632, true);
 		
 	}
-	// no special checks, assumes root exists between brackets
+	/**
+	 *  Bisection method implementation, with starting points a and ending points b.
+	 *  This method brackets the root and halves the bracket range depending on the result of the current midpoint.
+	 * @param a
+	 * @param b
+	 * @param equation
+	 * @param trueRoot
+	 * @param partB
+	 */
 	public static void bisection(double a, double b, ArrayList<Double> equation, double trueRoot, boolean partB){
 		if(!partB){ System.out.println("Bisection for Equation 1"); }
 		else { System.out.println("Bisection for Equation 2");}
@@ -73,8 +81,7 @@ public class FindingRoots {
 			}
 			errorT = (Math.abs(trueRoot - c))/trueRoot;
 			
-	    	System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f\n", 
-	    			+ iterations, a, b, c, fa, fb, fc, errorT, errorA);
+	    	System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f\n", iterations, a, b, c, fa, fb, fc, errorT, errorA);
 /*			System.out.println("n: " + iterations
 					+ "\na: " + a + ",\tb: " + b + ",\tc: " + c
 					+"\nfa:\t" + fa + ", fb:\t" + fb + ", fc:\t" + fc
@@ -87,6 +94,13 @@ public class FindingRoots {
 			++iterations;
 		}
 	}
+	/**
+	 * The Newton-Raphson method utilizes derivatives to converge to a root, constantly taking the slope of the line at a given point.
+	 * @param a
+	 * @param equation
+	 * @param trueRoot
+	 * @param partB
+	 */
 	public static void newton(double a,  ArrayList<Double> equation, double trueRoot, boolean partB){
 		if(!partB){ System.out.println("Newton for Equation 1"); }
 		else { System.out.println("Newton for Equation 2");}
@@ -115,8 +129,7 @@ public class FindingRoots {
 			}
 			next = start - ((fstart)/(fderiv));	//no need?
 
-			System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f\n", 
-			    	+ iterations,start,next,fstart,fderiv,errorT, errorA);
+			System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f\n", iterations,start,next,fstart,fderiv,errorT, errorA);
 /*			System.out.println("n: " + iterations
 					+ "\nstart: " + start + ",\tnext: " + next
 					+"\nfstart:\t" + fstart + ", fderiv:\t" + fderiv
@@ -126,7 +139,11 @@ public class FindingRoots {
 			++iterations;
 		}
 	}
-
+	/**
+	 * This method takes the derivative of a simple polynomial, which in hindsight was not needed.
+	 * @param equation
+	 * @return
+	 */
 	public static ArrayList<Double> derivative(ArrayList<Double> equation){
 		ArrayList<Double> derivative = new ArrayList<Double>();
 		for (int i = 0; i < equation.size()-1; ++i){
@@ -134,7 +151,15 @@ public class FindingRoots {
 		}
 		return derivative;
 	}
-
+	/**
+	 * The secant method is a variation of the newton method, but with the derivative approximated
+	 * utilizing a backward finite divided difference of a and b.
+	 * @param a
+	 * @param b
+	 * @param equation
+	 * @param trueRoot
+	 * @param partB
+	 */
 	public static void secant(double a, double b, ArrayList<Double> equation, double trueRoot, boolean partB){
 		if(!partB){ System.out.println("Secant for Equation 1"); }
 		else { System.out.println("Secant for Equation 2");}
@@ -203,7 +228,13 @@ public class FindingRoots {
 			++iterations;
 		}
 	}
-
+	/**
+	 * Similar to the secant method, but it uses a single starting value and uses a derivative calculated with the delta.
+	 * @param a
+	 * @param equation
+	 * @param trueRoot
+	 * @param partB
+	 */
 	public static void modSecant(double a, ArrayList<Double> equation, double trueRoot, boolean partB){
 		if(!partB){ System.out.println("Modified Secant for Equation 1"); }
 		else { System.out.println("Modified Secant for Equation 2");}
@@ -235,13 +266,20 @@ public class FindingRoots {
 					+ "\nstart: " + start + ",\tnext: " + next
 					+"\nfstart:\t" + fstart + ", fstartdelta:\t" + fstartdelta
 					+ "\nErrorA:\t" + errorA + ", ErrorT:\t" + errorT + "\n");*/
-	    	System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f\n", + iterations,start,next,errorT,errorA);
+			System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f\n", + iterations,start,next,errorT,errorA);
 
 			start = next;
 			++iterations;
 		}
 	}
-
+	/**
+	 * The false position method brackets a root then performs linear interpolation between the a and b.
+	 * @param a
+	 * @param b
+	 * @param equation
+	 * @param trueRoot
+	 * @param partB
+	 */
 	public static void falsePosition(double a, double b, ArrayList<Double> equation, double trueRoot, boolean partB){
 		if(!partB){ System.out.println("False Position for Equation 1"); }
 		else { System.out.println("False Position for Equation 2");	}
@@ -272,8 +310,7 @@ public class FindingRoots {
 			}
 			errorT = (Math.abs(trueRoot - c))/trueRoot;
 
-			System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f% 7.3f %7.3f %7.3f\n", 
-			    	+ iterations,a,b,c,fa,fb,fc,errorT,errorA);
+			System.out.printf("%2d %7.3f %7.3f %7.3f %7.3f %7.3f% 7.3f %7.3f %7.3f\n", iterations,a,b,c,fa,fb,fc,errorT,errorA);
 /*			System.out.println("n: " + iterations
 					+ "\na: " + a + ",\tb: " + b + ",\tc: " + c
 					+"\nfa:\t" + fa + ", fb:\t" + fb + ", fc:\t" + fc
